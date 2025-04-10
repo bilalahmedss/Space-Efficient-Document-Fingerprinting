@@ -1,59 +1,50 @@
-// - **Uses ASCII values** → Each character is converted to its ASCII number.  
-// - **Uses multiplication-based hashing** → Hash grows by multiplying with **PRIME_BASE (31)**.  
-// - **Uses a prime base (31)** → Helps spread hash values and reduce collisions.  
-// - **Uses a large modulo (10⁹ + 9)** → Prevents overflow and ensures unique hashes.  
-// - **Computes the first hash** → Multiplies characters by **BASE** and applies modulo.  
-// - **Uses rolling hash updates** → Removes the old character, shifts left, and adds the new one.  
-// - **Efficiently slides through the text** → Computes hashes in **O(n) time**.  
-// - **Stores fingerprints for all substrings** → Computes hashes for all substrings of a given length.  
-// - **Supports dynamic window size** → Allows flexible selection of substring length to generate rolling fingerprints dynamically based on input text.  
-// - **Determines dynamic window size** → Uses max(3, text_length / 2) to ensure a minimum size of 3 and adapt based on input length. 
-
+/**
+ * @file fingerprint.cpp
+ * @brief Implementation of fingerprint generation and matching functions.
+ * 
+ * This file implements the functions declared in fingerprint.h. It includes the logic for generating Rabin-Karp
+ * fingerprints for documents, creating document fingerprints as sets, and comparing the fingerprints to check for
+ * document similarity. The functions also handle preprocessing the input text to remove unwanted characters and
+ * format it for fingerprinting.
+ * 
+ * Functions:
+ * - determineWindowSize(int text_length): Calculates the appropriate window size for generating substrings.
+ * - generateFingerprints(const std::string& text, int window_size): Generates Rabin-Karp fingerprints for the
+ *   document's substrings.
+ * - createFingerprint(const std::string& text): Generates a set of unique fingerprints for the document.
+ * - readFingerprint(const std::string& text, const std::unordered_set<long long>& storedFingerprints): Compares
+ *   the document's fingerprints with a set of stored fingerprints to find matches.
+ */
+ 
+#include "fingerprint.h"
+#include "minhash.h"
 #include <iostream>
-#include <vector>
-#include <string>
 #include <algorithm>
 #include <cctype>
+#include "utils.h"
 
-using namespace std;
-
-const int PRIME_BASE = 31;
-const int MODULO = 1e9 + 9;
-
-// Function to preprocess text (convert to lowercase, remove non-alphabetic characters)
-string preprocessText(const string &text) {
-    string clean_text;
-    for (char c : text) {
-        if (isalnum(c)) { // Keep only letters and numbers
-            clean_text += tolower(c);
-        }
-    }
-    return clean_text;
-}
-
-// Function to determine window size dynamically
+// Determine the appropriate window size based on text length
 int determineWindowSize(int text_length) {
-    int window_size = max(3, text_length / 2);  // Ensure at least 3 characters
-    return window_size;
+    return std::max(3, text_length / 2);  // Ensure window size is at least 3 characters
 }
 
-// Function to generate Rabin-Karp fingerprints for substrings of length `window_size`
-vector<long long> generateFingerprints(const string &text, int window_size) {
+// Generate Rabin-Karp fingerprints for substrings of a specified window size
+std::vector<long long> generateFingerprints(const std::string &text, int window_size) {
     int n = text.size();
-    vector<long long> fingerprints;
+    std::vector<long long> fingerprints;
 
-    if (n < window_size) return fingerprints; // If text is too short, return empty result
+    if (n < window_size) return fingerprints;  // If text is too short, return empty vector
 
     long long hash_value = 0, power = 1;
 
-    // Compute the first window hash
+    // Compute the hash for the first window
     for (int i = 0; i < window_size; i++) {
         hash_value = (hash_value * PRIME_BASE + text[i]) % MODULO;
         if (i > 0) power = (power * PRIME_BASE) % MODULO;
     }
     fingerprints.push_back(hash_value);
 
-    // Rolling hash for next windows
+    // Rolling hash for subsequent windows
     for (int i = window_size; i < n; i++) {
         hash_value = (hash_value - text[i - window_size] * power % MODULO + MODULO) % MODULO;
         hash_value = (hash_value * PRIME_BASE + text[i]) % MODULO;
@@ -63,29 +54,31 @@ vector<long long> generateFingerprints(const string &text, int window_size) {
     return fingerprints;
 }
 
-// **Unit Test Function**
-void testFingerprintGeneration() {
-    string text = "qaziandbilalaregoodfriends";
-    cout << "Original text: " << text << endl;
-
-    // Preprocess text
-    string clean_text = preprocessText(text);
-    cout << "Preprocessed text: " << clean_text << endl;
-
-    // Dynamically determine window size
+// Generate a unique fingerprint for a document
+std::unordered_set<long long> createFingerprint(const std::string &text) {
+    std::string clean_text = preprocessText(text);  // Preprocess the text to remove noise
     int window_size = determineWindowSize(clean_text.length());
-    cout << "Dynamically chosen window size: " << window_size << endl;
 
-    // Generate fingerprints
-    vector<long long> fingerprints = generateFingerprints(clean_text, window_size);
-
-    cout << "Generated fingerprints:\n";
-    for (size_t i = 0; i < fingerprints.size(); i++) {
-        cout << "Fingerprint " << i + 1 << ": " << fingerprints[i] << endl;
-    }
+    // Generate fingerprints for substrings of the cleaned text
+    std::vector<long long> fingerprints = generateFingerprints(clean_text, window_size);
+    
+    // Return a set of unique fingerprints
+    return std::unordered_set<long long>(fingerprints.begin(), fingerprints.end());
 }
 
-int main() {
-    testFingerprintGeneration();  // Run unit test
-    return 0;
+// Check if a document’s fingerprint matches any of the stored fingerprints
+bool readFingerprint(const std::string &text, const std::unordered_set<long long> &storedFingerprints) {
+    std::string clean_text = preprocessText(text);  // Preprocess the text to remove noise
+    int window_size = determineWindowSize(clean_text.length());
+
+    // Generate fingerprints for substrings of the cleaned text
+    std::vector<long long> fingerprints = generateFingerprints(clean_text, window_size);
+    
+    // Check if any generated fingerprint exists in the stored set
+    for (long long fingerprint : fingerprints) {
+        if (storedFingerprints.find(fingerprint) != storedFingerprints.end()) {
+            return true;  // Match found
+        }
+    }
+    return false;  // No match found
 }
