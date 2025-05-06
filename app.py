@@ -15,9 +15,15 @@ def check_dataset():
     file = request.files['file']
     filepath = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(filepath)
+    
+    # Check if the executable exists
+    executable_path = './build/DocumentFingerprinting'
+    if not os.path.exists(executable_path):
+        return "Error: DocumentFingerprinting executable not found. Please build the project and try again.", 500
+
     # Call your C++ tool
     result = subprocess.check_output([
-        './build/DocumentFingerprinting', '--check', filepath, 'dataset_cbf'
+        executable_path, '--check', filepath, 'dataset_cbf'
     ], universal_newlines=True)
     result_lines = result.strip().splitlines()
     return render_template('result.html', result_lines=result_lines)
@@ -37,4 +43,5 @@ def compare_files():
     return render_template('result.html', result_lines=result_lines)
 
 if __name__ == '__main__':
+
     app.run(debug=True)
