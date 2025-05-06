@@ -1,0 +1,2 @@
+/usr/bin/ar qc libDocumentFingerprintingLib.a CMakeFiles/DocumentFingerprintingLib.dir/src/RabinKarp.cpp.o CMakeFiles/DocumentFingerprintingLib.dir/src/MinHash.cpp.o CMakeFiles/DocumentFingerprintingLib.dir/src/CountingBloomFilter.cpp.o
+/usr/bin/ranlib libDocumentFingerprintingLib.a

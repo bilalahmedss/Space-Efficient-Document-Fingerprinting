@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Fingerprinting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(60,72,100,0.12);
+            padding: 32px 40px 40px 40px;
+        }
+        h2 {
+            color: #3b82f6;
+            margin-bottom: 18px;
+        }
+        form {
+            margin-bottom: 32px;
+        }
+        input[type="file"] {
+            margin-bottom: 12px;
+        }
+        button {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .footer {
+            text-align: center;
+            color: #64748b;
+            margin-top: 32px;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align:center; color:#1e293b; margin-bottom: 8px; font-size:2.2rem; letter-spacing:1.5px; font-weight:800;">Space Efficient Document Fingerprinting</h1>
+        <div style="text-align:center; color:#475569; margin-bottom: 22px; font-size:1.15rem; font-weight:500; letter-spacing:0.5px;">
+            <span style="background:#e0e7ff; border-radius:8px; padding:4px 12px;">Group 21</span><br>
+            <span style="color:#3b82f6;">Bilal Ahmed</span>, <span style="color:#6366f1;">Arsal Jangda</span>, <span style="color:#0ea5e9;">Simra Shamim</span>, <span style="color:#f59e42;">Qazi Mustafa</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:32px;">
+            <div style="background:#f1f5f9; border-radius:12px; padding:24px 18px 18px 18px; box-shadow:0 2px 8px rgba(60,72,100,0.07);">
+                <h2 style="color:#3b82f6; margin-bottom:14px; text-align:center;">Check file against dataset</h2>
+                <form action="/check-dataset" method="post" enctype="multipart/form-data" style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+                    <input type="file" name="file" required style="padding:8px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; width:90%;">
+                    <button type="submit">Check</button>
+                </form>
+            </div>
+            <div style="background:#f1f5f9; border-radius:12px; padding:24px 18px 18px 18px; box-shadow:0 2px 8px rgba(60,72,100,0.07);">
+                <h2 style="color:#3b82f6; margin-bottom:14px; text-align:center;">Compare two files</h2>
+                <form action="/compare-files" method="post" enctype="multipart/form-data" style="display:flex; flex-direction:column; align-items:center; gap:10px;">
+                    <input type="file" name="file1" required style="padding:8px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; width:90%;">
+                    <input type="file" name="file2" required style="padding:8px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; width:90%;">
+                    <button type="submit">Compare</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer">
+            &copy; 2025 Document Fingerprinting UI &mdash; <span style="color:#3b82f6;">DS2 Project</span>
+        </div>
+    </div>
+</body>
+</html>

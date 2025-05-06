@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result - Space Efficient Document Fingerprinting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(60,72,100,0.12);
+            padding: 32px 40px 40px 40px;
+        }
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        .group {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 18px;
+            font-size: 1.1rem;
+        }
+        .result-box {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            font-size: 1.08rem;
+            color: #22223b;
+            overflow-x: auto;
+        }
+        .btn {
+            display: inline-block;
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .footer {
+            text-align: center;
+            color: #64748b;
+            margin-top: 32px;
+            font-size: 0.95rem;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 18px 6px 24px 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align:center; color:#1e293b; margin-bottom: 8px; font-size:2.2rem; letter-spacing:1.5px; font-weight:800;">Space Efficient Document Fingerprinting</h1>
+        <div style="text-align:center; color:#475569; margin-bottom: 22px; font-size:1.15rem; font-weight:500; letter-spacing:0.5px;">
+            <span style="background:#e0e7ff; border-radius:8px; padding:4px 12px;">Group 21</span><br>
+            <span style="color:#3b82f6;">Bilal Ahmed</span>, <span style="color:#6366f1;">Arsal Jangda</span>, <span style="color:#0ea5e9;">Simra Shamim</span>, <span style="color:#f59e42;">Qazi Mustafa</span>
+        </div>
+        <div style="background:#f1f5f9; border-radius:18px; padding:32px 18px 24px 18px; box-shadow:0 4px 18px rgba(60,72,100,0.13); margin-bottom:32px;">
+            <h2 style="color:#3b82f6; margin-bottom:18px; text-align:center; font-size:1.4rem; letter-spacing:0.5px;">Result</h2>
+            <div id="resultBox" style="background:#fff; border-radius:10px; padding:22px; font-family:'Fira Mono','Consolas',monospace; font-size:1.13rem; color:#22223b; overflow-x:auto; box-shadow:0 2px 8px rgba(60,72,100,0.10); white-space:pre; border:2px solid #e0e7ff;">
+                {{ result }}
+            </div>
+            <div style="display:flex; justify-content:center; gap:18px; margin-top:22px; flex-wrap:wrap;">
+                <button class="btn" onclick="window.location.href='/'" style="background:#6366f1;">Back to Home</button>
+                <button class="btn" onclick="copyResult()" style="background:#3b82f6;">Copy Result</button>
+                <button class="btn" onclick="downloadResult()" style="background:#0ea5e9;">Download Result</button>
+            </div>
+        </div>
+        <div class="footer">
+            &copy; 2025 Document Fingerprinting UI &mdash; <span style="color:#3b82f6;">DS2 Project</span>
+        </div>
+    </div>
+    <script>
+        function copyResult() {
+            const text = document.getElementById('resultBox').innerText;
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Result copied to clipboard!');
+            }, function(err) {
+                alert('Failed to copy: ' + err);
+            });
+        }
+        function downloadResult() {
+            const text = document.getElementById('resultBox').innerText;
+            const blob = new Blob([text], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'result.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

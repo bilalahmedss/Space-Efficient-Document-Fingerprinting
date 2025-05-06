@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/DocumentFingerprinting.dir/src/main.cpp.o -o DocumentFingerprinting  libDocumentFingerprintingLib.a 
