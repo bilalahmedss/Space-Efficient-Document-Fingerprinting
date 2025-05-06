@@ -24,20 +24,6 @@ This project implements document fingerprinting techniques using algorithms like
    cmake --build .
    ```
 
-## Run Instructions
-- To check an input file against the dataset:
-  ```
-  ./DocumentFingerprinting --check path/to/input.txt ../dataset_cbf
-  ```
-- To compare two files directly:
-  ```
-  ./DocumentFingerprinting file1.txt file2.txt
-  ```
-- To run the tests:
-  ```
-  ctest
-  ```
-
 ## Command Line Usage
 
 ### 1. Preprocess the Dataset (create CBFs, MinHash, and Rabin-Karp hashes for all dataset files)
@@ -73,9 +59,3 @@ or
 ## Dependencies
 - C++17 or higher
 - Google Test (for unit testing)
-
-## Debugging and Bloom Filter Statistics
-- The Counting Bloom Filter now provides a method to estimate and log its false positive rate. You can call `estimateFalsePositiveRate(estimatedNumElements)` in your code to print and retrieve the current false positive rate, where `estimatedNumElements` is your estimate of the number of unique elements added to the filter.
-
-## License
-This project is licensed under the MIT License.
