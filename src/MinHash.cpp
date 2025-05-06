@@ -50,6 +50,13 @@ std::vector<int> MinHash::computeSignature(const std::unordered_set<int>& hashes
 #endif
         }
     }
+
+    for (auto& value : signature) {
+        if (value < 0) {
+            value = -value; // Ensure non-negative values
+        }
+    }
+
 #ifdef MINHASH_LOGGING
     std::cout << "[MinHash] Final signature: ";
     for (int s : signature) std::cout << s << " ";

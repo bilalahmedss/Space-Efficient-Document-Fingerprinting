@@ -8,6 +8,7 @@
 #include <numeric>
 #include <stdexcept>
 #include <iostream>
+#include <fstream>
 
 // Forward declaration for porterStemmer
 std::string porterStemmer(const std::string& word);
@@ -102,6 +103,10 @@ std::unordered_set<int> RabinKarp::computeHashes(const std::vector<std::string>&
             hash = (hash * base + kgram[i]) % prime;
         }
 
+        if (hash < 0) {
+            hash = -hash; // Ensure non-negative hash values
+        }
+
         // Handle potential hash collisions by ensuring unique entries
         while (hashes.find(hash) != hashes.end()) {
             hash = (hash + 1) % prime; // Linear probing to resolve collision
@@ -134,8 +139,18 @@ std::string porterStemmer(const std::string& word) {
 
     std::string stem = word;
 
-    // Step 1a: Remove 's' suffixes
-    if (stem.back() == 's') {
+    // List of exceptions: words that should not be stemmed
+    static const std::unordered_set<std::string> exceptions = {"has", "free", "will"};
+    if (exceptions.find(word) != exceptions.end()) {
+        return word; // Return the word as is if it's in the exceptions list
+    }
+
+    auto hasVowel = [](const std::string& str) {
+        return str.find_first_of("aeiou") != std::string::npos;
+    };
+
+    // Step 1a: Remove 's' suffixes only if it is not part of a meaningful word
+    if (stem.back() == 's' && hasVowel(stem.substr(0, stem.length() - 1))) {
         if (stem.length() > 1 && stem[stem.length() - 2] == 'e') {
             stem.pop_back(); // Remove 's' from "es"
         } else {
@@ -143,11 +158,16 @@ std::string porterStemmer(const std::string& word) {
         }
     }
 
-    // Step 1b: Remove 'ed' or 'ing' suffixes
-    if (stem.length() > 2 && stem.substr(stem.length() - 2) == "ed") {
+    // Step 1b: Remove 'ed' or 'ing' suffixes only if it is not part of a meaningful word
+    if (stem.length() > 2 && stem.substr(stem.length() - 2) == "ed" && hasVowel(stem.substr(0, stem.length() - 2))) {
         stem = stem.substr(0, stem.length() - 2);
-    } else if (stem.length() > 3 && stem.substr(stem.length() - 3) == "ing") {
+    } else if (stem.length() > 3 && stem.substr(stem.length() - 3) == "ing" && hasVowel(stem.substr(0, stem.length() - 3))) {
         stem = stem.substr(0, stem.length() - 3);
+    }
+
+    // Step 1c: Prevent removal of double consonants unless meaningful
+    if (stem.length() > 1 && stem[stem.length() - 1] == stem[stem.length() - 2] && hasVowel(stem.substr(0, stem.length() - 1))) {
+        stem.pop_back();
     }
 
     // Step 2: Handle double consonants (e.g., "running" -> "run")
@@ -161,4 +181,44 @@ std::string porterStemmer(const std::string& word) {
     }
 
     return stem;
+}
+
+void RabinKarp::generateCSV(const std::string& inputFilePath, const std::string& outputFilePath) {
+    std::ifstream inputFile(inputFilePath);
+    if (!inputFile) {
+        throw std::runtime_error("Failed to open input file: " + inputFilePath);
+    }
+
+    std::stringstream buffer;
+    buffer << inputFile.rdbuf();
+    std::string document = buffer.str();
+
+    // Preprocess the document
+    std::string processedDoc = preprocess(document);
+
+    // Generate k-grams
+    auto kgrams = generateKGrams(processedDoc);
+
+    // Compute hashes
+    auto hashes = computeHashes(kgrams);
+
+    // Write to CSV
+    std::ofstream outputFile(outputFilePath);
+    if (!outputFile) {
+        throw std::runtime_error("Failed to open output file: " + outputFilePath);
+    }
+
+    outputFile << "Preprocessed Document," << processedDoc << "\n";
+    outputFile << "K-Grams,Hashes\n";
+    for (size_t i = 0; i < kgrams.size(); ++i) {
+        outputFile << kgrams[i] << ",";
+        if (i < hashes.size()) {
+            auto it = hashes.begin();
+            std::advance(it, i);
+            outputFile << *it;
+        }
+        outputFile << "\n";
+    }
+
+    outputFile.close();
 }

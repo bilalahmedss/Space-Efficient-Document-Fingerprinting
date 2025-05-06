@@ -76,25 +76,41 @@
         </div>
         <div style="background:#f1f5f9; border-radius:18px; padding:32px 18px 24px 18px; box-shadow:0 4px 18px rgba(60,72,100,0.13); margin-bottom:32px;">
             <h2 style="color:#3b82f6; margin-bottom:18px; text-align:center; font-size:1.4rem; letter-spacing:0.5px;">Result</h2>
-            <div id="resultBox" style="background:#fff; border-radius:10px; padding:22px; font-family:'Fira Mono','Consolas',monospace; font-size:1.13rem; color:#22223b; overflow-x:auto; box-shadow:0 2px 8px rgba(60,72,100,0.10); white-space:pre; border:2px solid #e0e7ff;">
-<div style="text-align:center;">{{ result_lines[0] }}</div>
-{% for line in result_lines[1:3] -%}
-{{ line }}<br>
-{%- endfor %}
-{% set data_rows = result_lines[3:8] %}
-{% for line in data_rows -%}
-{{ line }}{% if not loop.last %}<br>{% endif %}
-{%- endfor %}
-<span id="moreResults" style="display:none;">
-{% set more_rows = result_lines[8:] %}
-{% for line in more_rows -%}
-{{ line }}{% if not loop.last %}<br>{% endif %}
-{%- endfor %}
-</span>
+            <div id="resultBox" style="background:#fff; border-radius:10px; padding:22px; font-family:'Fira Mono','Consolas',monospace; font-size:1.13rem; color:#22223b; overflow-x:auto; box-shadow:0 2px 8px rgba(60,72,100,0.10); border:2px solid #e0e7ff;">
+                <div style="text-align:center;">{{ result_lines[0] }}</div>
+                <pre id="resultPre" style="margin:0; background:none; border:none; padding:0; font-family:inherit; font-size:inherit; color:inherit;">
+{% set always_show = 8 %}
+{% for line in result_lines[1:always_show] %}{{ line }}
+{% endfor %}
+{% if result_lines|length > always_show %}{% for line in result_lines[always_show:] %}{% endfor %}{% endif %}
+                </pre>
             </div>
-            <div id="showMoreContainer" style="text-align:center; margin-top:10px; {% if result_lines|length <= 8 %}display:none;{% endif %}">
-                <button class="btn" id="showMoreBtn" style="background:#0ea5e9;">Show More ({{ result_lines|length - 8 }} more)</button>
+            <div id="showMoreContainer" style="text-align:center; margin-top:10px; {% if result_lines|length <= always_show %}display:none;{% endif %}">
+                <button class="btn" id="showMoreBtn" style="background:#0ea5e9;">Show More ({{ result_lines|length - always_show }} more)</button>
             </div>
+            <script>
+                const allLines = {{ result_lines[1:]|tojson }};
+                const alwaysShow = {{ always_show - 1 }};
+                const resultPre = document.getElementById('resultPre');
+                const showMoreBtn = document.getElementById('showMoreBtn');
+                let expanded = false;
+                function renderLines() {
+                    if (!expanded) {
+                        resultPre.textContent = allLines.slice(0, alwaysShow).join('\n');
+                        if (showMoreBtn) showMoreBtn.textContent = `Show More (${allLines.length - alwaysShow} more)`;
+                    } else {
+                        resultPre.textContent = allLines.join('\n');
+                        if (showMoreBtn) showMoreBtn.textContent = 'Show Less';
+                    }
+                }
+                if (showMoreBtn) {
+                    showMoreBtn.addEventListener('click', function() {
+                        expanded = !expanded;
+                        renderLines();
+                    });
+                }
+                renderLines();
+            </script>
             <div style="display:flex; justify-content:center; gap:18px; margin-top:22px; flex-wrap:wrap;">
                 <button class="btn" onclick="window.location.href='/'" style="background:#6366f1;">Back to Home</button>
                 <button class="btn" onclick="copyResult()" style="background:#3b82f6;">Copy Result</button>

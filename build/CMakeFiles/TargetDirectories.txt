@@ -1,6 +1,0 @@
-/mnt/f/DS2 Project/Code/build/CMakeFiles/DocumentFingerprintingLib.dir
-/mnt/f/DS2 Project/Code/build/CMakeFiles/DocumentFingerprinting.dir
-/mnt/f/DS2 Project/Code/build/CMakeFiles/DocumentFingerprintingTests.dir
-/mnt/f/DS2 Project/Code/build/CMakeFiles/test.dir
-/mnt/f/DS2 Project/Code/build/CMakeFiles/edit_cache.dir
-/mnt/f/DS2 Project/Code/build/CMakeFiles/rebuild_cache.dir

@@ -19,7 +19,8 @@ def check_dataset():
     result = subprocess.check_output([
         './build/DocumentFingerprinting', '--check', filepath, 'dataset_cbf'
     ], universal_newlines=True)
-    return render_template('result.html', result=result)
+    result_lines = result.strip().splitlines()
+    return render_template('result.html', result_lines=result_lines)
 
 @app.route('/compare-files', methods=['POST'])
 def compare_files():
@@ -32,7 +33,8 @@ def compare_files():
     result = subprocess.check_output([
         './build/DocumentFingerprinting', path1, path2
     ], universal_newlines=True)
-    return render_template('result.html', result=result)
+    result_lines = result.strip().splitlines()
+    return render_template('result.html', result_lines=result_lines)
 
 if __name__ == '__main__':
     app.run(debug=True)

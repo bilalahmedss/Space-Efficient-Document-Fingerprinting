@@ -29,6 +29,9 @@ public:
     // Determine if the similarity score exceeds the given threshold.
     bool isSimilar(double similarityScore, double threshold = 0.4);
 
+    // Generate a CSV file containing the preprocessed document, k-grams, and computed hashes.
+    void generateCSV(const std::string& inputFilePath, const std::string& outputFilePath);
+
 private:
     int k; // k-gram size
     int base; // Base for hashing

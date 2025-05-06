@@ -32,21 +32,17 @@ target_link_libraries(DocumentFingerprinting PRIVATE DocumentFingerprintingLib)
 # Enable testing
 enable_testing()
 
-# Add Google Test
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+# Remove GTest references
+# find_package(GTest REQUIRED)
+# include_directories(${GTEST_INCLUDE_DIRS})
 
-# Test files
-set(TEST_SOURCES
-    test/test_main.cpp
-    test/test_CountingBloomFilter.cpp
-    test/test_MinHash.cpp
-    test/test_RabinKarp.cpp
-)
+# Add individual test executables
+add_executable(test_rabin_karp test/test_rabin_karp.cpp)
+target_link_libraries(test_rabin_karp PRIVATE DocumentFingerprintingLib)
 
-# Add test executable, now linking with main library
-add_executable(DocumentFingerprintingTests ${TEST_SOURCES})
-target_link_libraries(DocumentFingerprintingTests PRIVATE DocumentFingerprintingLib ${GTEST_LIBRARIES} pthread)
+add_executable(test_cbf test/test_cbf.cpp)
+target_link_libraries(test_cbf PRIVATE DocumentFingerprintingLib)
 
-# Add tests
-add_test(NAME AllTests COMMAND DocumentFingerprintingTests)
+add_executable(test_MinHash test/test_MinHash.cpp)
+target_link_libraries(test_MinHash PRIVATE DocumentFingerprintingLib)
+

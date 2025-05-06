@@ -37,7 +37,7 @@ void logMessage(const std::string& message) {
 #endif
 }
 
-// Updated add method with logging
+// Add an element to the Counting Bloom Filter.
 void CountingBloomFilter::add(int element) {
     if (element < 0) {
         throw std::invalid_argument("Element value must be non-negative.");
@@ -55,7 +55,7 @@ void CountingBloomFilter::add(int element) {
     }
 }
 
-// Updated possiblyContains method with logging
+// Check if an element is possibly in the Counting Bloom Filter.
 bool CountingBloomFilter::possiblyContains(int element) const {
     if (element < 0) {
         throw std::invalid_argument("Element value must be non-negative.");
