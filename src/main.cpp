@@ -98,25 +98,6 @@ int main(int argc, char* argv[]) {
                 std::vector<int> datasetSignature;
                 std::ifstream mhifs(std::filesystem::path(cbfDir) / (baseName + ".minhash"));
                 while (mhifs >> v) datasetSignature.push_back(v);
-
-                // Load the CBF for each dataset document
-                CountingBloomFilter datasetCBF(bloomFilterSize, numHashFunctions);
-                std::filesystem::path cbfFile = std::filesystem::path(cbfDir) / (baseName + ".cbf");
-                datasetCBF.loadFromFile(cbfFile.string());
-
-                // Check if the input document's MinHash signature hashes are possibly present in the CBF
-                bool possiblySimilar = true;
-                for (auto hash : inputSignature) {
-                    if (hash < 0) hash = -hash;
-                    if (!datasetCBF.possiblyContains(hash)) {
-                        possiblySimilar = false;
-                        break;
-                    }
-                }
-
-                // Skip detailed similarity calculations if not possibly similar
-                if (!possiblySimilar) continue;
-
                 double rkSim = rabinKarp.calculateSimilarity(inputHashes, datasetHashes);
                 double mhSim = minHash.calculateSimilarity(inputSignature, datasetSignature);
                 double combinedSim = 0.5 * rkSim + 0.5 * mhSim;
@@ -229,4 +210,3 @@ int main(int argc, char* argv[]) {
     }
     return 0;
 }
-
