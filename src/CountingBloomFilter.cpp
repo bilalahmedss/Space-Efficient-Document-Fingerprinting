@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
-
+// #define CBF_LOGGING
 // Constructor: Initializes the CountingBloomFilter with a given size and hash functions.
 CountingBloomFilter::CountingBloomFilter(int size, int numHashFunctions) : size(size), numHashFunctions(numHashFunctions), counts(size, 0) {
     if (size <= 0) {
