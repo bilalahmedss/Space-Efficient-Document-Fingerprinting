@@ -59,3 +59,23 @@ or
 ## Dependencies
 - C++17 or higher
 - Google Test (for unit testing)
+
+## Testing
+
+There are dedicated test files in the `test/` directory to verify the correctness and behavior of each core component:
+
+- **test_cbf.cpp**: Tests the Counting Bloom Filter, including adding, querying, and estimating false positive rates.
+- **test_rabin_karp.cpp**: Tests the Rabin-Karp algorithm for text similarity detection.
+- **test_MinHash.cpp**: Tests the MinHash algorithm for set similarity estimation.
+
+### How to Run the Tests
+
+1. Build the project as described above.
+2. From the `build/` directory, run the test executables:
+   ```
+   ./test_cbf
+   ./test_rabin_karp
+   ./test_MinHash
+   ```
+
+Each test prints output to the console, showing the results of the tested functionality and any detected issues.
